@@ -2,9 +2,9 @@
 replicaCount: 2
 
 image:
-  repository: python
+  repository: vinaykumarmakam/test-api
   pullPolicy: IfNotPresent
-  tag: "3.11-slim"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""

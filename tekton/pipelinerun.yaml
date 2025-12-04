@@ -1,0 +1,34 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: test-api-build-
+  namespace: tekton-pipelines
+spec:
+  pipelineRef:
+    name: test-api-cicd
+  params:
+    - name: git-url
+      value: https://github.com/vinaykumarmakam/test-api.git
+    - name: git-revision
+      value: main
+    - name: image-name
+      value: vinaykumarmakam/test-api
+    - name: image-tag
+      value: "$(context.pipelineRun.name)"
+    - name: helm-release-name
+      value: test-api
+    - name: helm-namespace
+      value: products
+  workspaces:
+    - name: source-code
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    - name: docker-credentials
+      secret:
+        secretName: docker-credentials
