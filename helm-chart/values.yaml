@@ -2,7 +2,7 @@
 replicaCount: 2
 
 image:
-  repository: 10.43.168.55:5000/test-api
+  repository: docker-registry.registry.svc.cluster.local:5000/test-api
   pullPolicy: Always
   tag: "latest"
 
