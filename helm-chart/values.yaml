@@ -2,9 +2,9 @@
 replicaCount: 2
 
 image:
-  repository: vinaykumarmakam/test-api
+  repository: nginx
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "alpine"
 
 imagePullSecrets: []
 nameOverride: ""
