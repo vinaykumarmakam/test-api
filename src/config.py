@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     
     # Application
     APP_NAME: str = "test-api"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "1.1.0"  # Updated for TLS CI/CD test
     APP_ENV: str = "development"
     
     # API

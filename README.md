@@ -2,6 +2,8 @@
 
 Micro-SaaS data product built on briggon-dataplatform.
 
+**Latest Update**: Production-grade TLS CI/CD pipeline validated! ✅
+
 ## Quick Start
 
 ```bash

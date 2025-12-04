@@ -58,7 +58,9 @@ async def root():
     return {
         "service": settings.APP_NAME,
         "version": settings.APP_VERSION,
-        "status": "running"
+        "status": "running",
+        "message": "Production-grade TLS CI/CD pipeline active! 🚀",
+        "build_date": datetime.utcnow().isoformat()
     }
 
 @app.get("/health", response_model=HealthResponse)
