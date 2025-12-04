@@ -2,9 +2,9 @@
 replicaCount: 2
 
 image:
-  repository: your-registry/test-api
+  repository: python
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "3.11-slim"
 
 imagePullSecrets: []
 nameOverride: ""
