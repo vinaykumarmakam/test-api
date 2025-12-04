@@ -3,10 +3,11 @@ replicaCount: 2
 
 image:
   repository: 10.43.43.81:5000/test-api
-  pullPolicy: Always
-  tag: "latest"
+  pullPolicy: IfNotPresent
+  tag: "v1.1.0"
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: registry-pull-secret
 nameOverride: ""
 fullnameOverride: ""
 
