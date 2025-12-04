@@ -1,0 +1,125 @@
+# Default values for data-product
+replicaCount: 2
+
+image:
+  repository: your-registry/test-api
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8000"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    external-dns.alpha.kubernetes.io/hostname: "test-api.briggon.ai"
+  hosts:
+    - host: test-api.briggon.ai
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: test-api-tls
+      hosts:
+        - test-api.briggon.ai
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+  # Queue-based autoscaling (optional)
+  queueDepthScaling:
+    enabled: false
+    redisQueueKey: "celery"
+    targetQueueDepth: 50
+
+# Priority and Resource Management
+priorityClassName: normal  # critical, high, normal, low, best-effort
+
+# Node affinity and scheduling
+nodeSelector: {}
+
+tolerations: []
+
+affinity:
+  # Prefer scheduling on nodes with available resources
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: node-role.kubernetes.io/worker
+              operator: In
+              values:
+                - "true"
+  # Spread pods across nodes for HA
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - data-product
+          topologyKey: kubernetes.io/hostname
+
+# Application configuration
+env:
+  APP_NAME: "test-api"
+  APP_VERSION: "1.0.0"
+  APP_ENV: "production"
+  DATABASE_URL: "postgresql://user:password@postgresql.databases.svc.cluster.local:5432/products"
+  REDIS_URL: "redis://redis.databases.svc.cluster.local:6379/0"
+  S3_ENDPOINT: "http://minio.databases.svc.cluster.local:9000"
+  S3_BUCKET: "data-platform"
+  ENABLE_METRICS: "true"
+  LOG_LEVEL: "INFO"
+
+# Secrets (use external secret management in production)
+secrets:
+  S3_ACCESS_KEY: "minio-admin"
+  S3_SECRET_KEY: "changeme"
+  DATABASE_PASSWORD: "changeme"
+  REDIS_PASSWORD: ""
