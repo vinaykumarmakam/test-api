@@ -1,0 +1,43 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: git-build-push
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: image-name
+      type: string
+    - name: dockerfile
+      type: string
+      default: ./Dockerfile
+  
+  results:
+    - name: IMAGE_DIGEST
+      description: Digest of the image just built
+  
+  steps:
+    - name: git-clone
+      image: alpine/git:latest
+      script: |
+        #!/bin/sh
+        set -ex
+        cd /workspace
+        git clone $(params.git-url) repo
+        cd repo
+        git checkout $(params.git-revision)
+        ls -la
+    
+    - name: build-push
+      image: gcr.io/kaniko-project/executor:latest
+      args:
+        - --dockerfile=$(params.dockerfile)
+        - --context=/workspace/repo
+        - --destination=$(params.image-name)
+        - --insecure
+        - --skip-tls-verify
+        - --digest-file=/tekton/results/IMAGE_DIGEST

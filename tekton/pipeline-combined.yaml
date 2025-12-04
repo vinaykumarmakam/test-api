@@ -1,0 +1,29 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: test-api-combined
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: git-url
+      type: string
+      default: https://github.com/vinaykumarmakam/test-api.git
+    - name: git-revision
+      type: string
+      default: main
+    - name: image-name
+      type: string
+      default: docker-registry.registry.svc.cluster.local:5000/test-api:latest
+  
+  tasks:
+    - name: build
+      taskRef:
+        name: git-build-push
+      params:
+        - name: git-url
+          value: $(params.git-url)
+        - name: git-revision
+          value: $(params.git-revision)
+        - name: image-name
+          value: $(params.image-name)
