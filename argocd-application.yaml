@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/your-org/test-api.git
+    repoURL: https://github.com/vinaykumarmakam/test-api.git
     targetRevision: main
     path: helm-chart
     helm:
