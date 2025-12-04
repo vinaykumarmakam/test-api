@@ -2,9 +2,9 @@
 replicaCount: 2
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  tag: "alpine"
+  repository: docker-registry.registry.svc.cluster.local:5000/test-api
+  pullPolicy: Always
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
